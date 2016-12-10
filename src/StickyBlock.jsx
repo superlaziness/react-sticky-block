@@ -1,12 +1,12 @@
 import React, { PureComponent, PropTypes } from 'react';
 
 const STYLES = {
-  default: {position: 'static'},
+  default: { position: 'static' },
   sticked: {
     position: 'fixed',
     top: 0,
-  }
-}
+  },
+};
 
 export default class StickyBlock extends PureComponent {
   static propTypes = {
@@ -48,7 +48,7 @@ export default class StickyBlock extends PureComponent {
       let offset = 0;
       do {
         if (!isNaN(el.offsetTop)) offset += el.offsetTop;
-      } while(el = el.offsetParent);
+      } while (el = el.offsetParent);
       return offset;
     };
     setTimeout(() => {
@@ -58,7 +58,7 @@ export default class StickyBlock extends PureComponent {
         elWidth: this.sticky.getBoundingClientRect().width,
         parent: this.sticky.offsetParent,
       };
-      this.setState({init: false});
+      this.setState({ init: false });
     }, this.props.initTimeout);
   }
 
@@ -67,6 +67,7 @@ export default class StickyBlock extends PureComponent {
     const scrollState = this.getScrollState();
     this.setBehaivor(scrollState);
     this.setSticked(scrollState);
+    return false;
   }
 
   getScrollState = () => {
@@ -80,7 +81,7 @@ export default class StickyBlock extends PureComponent {
       scrollPosition,
       scrollDirection: lastScrollPosition > scrollPosition ? 'up' : 'down',
       parentRect: parent.getBoundingClientRect(),
-    }
+    };
   }
 
   setBehaivor = ({ rect, innerZone, scrollPosition, parentRect }) => {
