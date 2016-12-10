@@ -5,7 +5,8 @@
   "main": "lib/index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "lint": "eslint src",
+    "lint": "eslint src --ext jsx --ext js",
+    "lint:fix": "eslint src --fix --ext jsx --ext js",
     "build": "babel --out-dir lib src"
   },
   "repository": {
