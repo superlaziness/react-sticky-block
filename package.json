@@ -5,7 +5,8 @@
   "main": "lib/index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "lint": "eslint src/StickyBlock.jsx",
+    "lint": "eslint src --ext jsx --ext js",
+    "lint:fix": "eslint src --fix --ext jsx --ext js",
     "build": "babel --out-dir lib src"
   },
   "repository": {
@@ -35,6 +36,8 @@
     "babel-preset-stage-1": "6.16.0",
     "eslint": "3.12.0",
     "eslint-config-airbnb": "13.0.0",
-    "eslint-plugin-import": "2.2.0"
+    "eslint-plugin-import": "2.2.0",
+    "eslint-plugin-jsx-a11y": "^2.2.3",
+    "eslint-plugin-react": "^6.8.0"
   }
 }
