@@ -1,0 +1,27 @@
+{
+  "name": "react-sticky-block",
+  "version": "0.1.0",
+  "description": "React Sticky component",
+  "main": "lib/index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/superlaziness/react-sticky-block.git"
+  },
+  "keywords": [
+    "react",
+    "sticky",
+    "component"
+  ],
+  "author": "Stanislav Superlazin <shemyakin@me.com> (http://superlaziness.com/)",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/superlaziness/react-sticky-block/issues"
+  },
+  "homepage": "https://github.com/superlaziness/react-sticky-block#readme",
+  "dependencies": {
+    "react": "15.4.1"
+  }
+}
