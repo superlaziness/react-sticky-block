@@ -1,2 +1,3 @@
-import StickyBlock from './StickyBlock';
+import StickyBlock from './StickyBlock.jsx';
+
 export default StickyBlock;
