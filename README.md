@@ -6,7 +6,7 @@ Right way to make your block sticky
 
 ## Install
 
-```sh npm install react-sticky-block```
+```npm install react-sticky-block```
 
 
 ## Usage
