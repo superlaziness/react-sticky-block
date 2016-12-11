@@ -2,7 +2,7 @@ import React, { PureComponent, PropTypes } from 'react';
 
 const STYLES = {
   default: { position: 'static' },
-  sticked: {
+  stuck: {
     position: 'fixed',
     top: 0,
   },
@@ -10,17 +10,20 @@ const STYLES = {
 
 export default class StickyBlock extends PureComponent {
   static propTypes = {
-    headerOffset: PropTypes.number,
-    footerOffset: PropTypes.number,
+    topOffset: PropTypes.number,
+    bottomOffset: PropTypes.number,
     initTimeout: PropTypes.number,
-    children: PropTypes.element.isRequired,
+    children: PropTypes.oneOfType([
+      PropTypes.element.isRequired,
+      PropTypes.array.isRequired,
+    ]),
   }
 
   constructor(props) {
     super(props);
 
     this.state = {
-      sticked: false,
+      stuck: false,
       init: true,
     };
 
@@ -44,13 +47,13 @@ export default class StickyBlock extends PureComponent {
   }
 
   getScrollState = () => {
-    const { headerOffset, footerOffset } = this.props;
+    const { topOffset, bottomOffset } = this.props;
     const { lastScrollPosition, parent } = this.data;
     const scrollPosition = window.pageYOffset;
     this.data.lastScrollPosition = scrollPosition;
     return {
       rect: this.sticky.getBoundingClientRect(),
-      innerZone: window.innerHeight - headerOffset - footerOffset,
+      innerZone: window.innerHeight - topOffset - bottomOffset,
       scrollPosition,
       scrollDirection: lastScrollPosition > scrollPosition ? 'up' : 'down',
       parentRect: parent.getBoundingClientRect(),
@@ -59,15 +62,15 @@ export default class StickyBlock extends PureComponent {
 
   setBehaivor = ({ rect, innerZone, parentRect }) => {
     const { behavior } = this.data;
-    const { headerOffset } = this.props;
+    const { topOffset } = this.props;
 
     let newBehavior;
-    if (parentRect.bottom < headerOffset + rect.height) {
+    if (parentRect.bottom < topOffset + rect.height) {
       newBehavior = 'overflow';
     } else if (rect.height > innerZone && behavior !== 'slideStick') {
       newBehavior = 'slideStick';
     } else if (rect.height < innerZone) {
-      if (rect.top < headerOffset && behavior !== 'stickTop') newBehavior = 'lost';
+      if (rect.top < topOffset && behavior !== 'stickTop') newBehavior = 'lost';
       else newBehavior = 'stickTop';
     }
 
@@ -78,11 +81,11 @@ export default class StickyBlock extends PureComponent {
     const { behavior, elOffset, scrollOffset } = this.data;
     if (!behavior) return false;
 
-    const { headerOffset } = this.props;
-    let { sticked } = this.state;
+    const { topOffset } = this.props;
+    let { stuck } = this.state;
     const data = {};
 
-    const stickedTopOffset = Math.max(0, (scrollPosition + headerOffset) - scrollOffset);
+    const stuckTopOffset = Math.max(0, (scrollPosition + topOffset) - scrollOffset);
 
     switch (scrollDirection) {
 
@@ -92,27 +95,27 @@ export default class StickyBlock extends PureComponent {
         switch (behavior) {
           case 'lost':
           case 'overflow':
-            sticked = false;
+            stuck = false;
             break;
 
           case 'stickTop': {
-            if (elOffset < stickedTopOffset) {
-              sticked = false;
+            if (elOffset < stuckTopOffset) {
+              stuck = false;
             } else {
-              data.elOffset = stickedTopOffset;
-              sticked = !!stickedTopOffset;
+              data.elOffset = stuckTopOffset;
+              stuck = !!stuckTopOffset;
               data.fixedOffset = (scrollOffset + data.elOffset) - scrollPosition;
             }
             break;
           }
           case 'slideStick': {
-            if (scrollPosition < (elOffset + scrollOffset) - headerOffset) {
-              data.elOffset = stickedTopOffset;
+            if (scrollPosition < (elOffset + scrollOffset) - topOffset) {
+              data.elOffset = stuckTopOffset;
               data.fixedOffset = (scrollOffset + data.elOffset) - scrollPosition;
-              sticked = !!stickedTopOffset;
+              stuck = !!stuckTopOffset;
             } else {
               data.fixedOffset = rect.top;
-              sticked = false;
+              stuck = false;
             }
             break;
           }
@@ -127,33 +130,33 @@ export default class StickyBlock extends PureComponent {
 
           case 'lost': {
             data.elOffset = (scrollPosition + this.data.fixedOffset) - scrollOffset;
-            sticked = true;
+            stuck = true;
             break;
           }
 
           case 'overflow': {
-            sticked = false;
+            stuck = false;
             break;
           }
 
           case 'stickTop': {
-            data.elOffset = stickedTopOffset;
-            sticked = !!stickedTopOffset;
+            data.elOffset = stuckTopOffset;
+            stuck = !!stuckTopOffset;
             data.fixedOffset = (scrollOffset + data.elOffset) - scrollPosition;
             break;
           }
 
           case 'slideStick': {
             const windowBottom = scrollPosition + innerZone;
-            const stickyBottom = ((scrollOffset + elOffset) - headerOffset) + rect.height;
+            const stickyBottom = ((scrollOffset + elOffset) - topOffset) + rect.height;
             if (windowBottom > stickyBottom) {
               data.elOffset = scrollPosition - scrollOffset
-                - (rect.height - innerZone - headerOffset);
+                - (rect.height - innerZone - topOffset);
               data.fixedOffset = (scrollOffset + data.elOffset) - scrollPosition;
-              sticked = true;
+              stuck = true;
             } else {
               data.fixedOffset = rect.top;
-              sticked = false;
+              stuck = false;
             }
             break;
           }
@@ -166,7 +169,7 @@ export default class StickyBlock extends PureComponent {
     }
 
     this.data = { ...this.data, ...data };
-    this.setState({ sticked });
+    this.setState({ stuck });
     return false;
   }
 
@@ -203,11 +206,11 @@ export default class StickyBlock extends PureComponent {
   render() {
     const { elOffset, fixedOffset, elWidth } = this.data;
     const { children } = this.props;
-    const { sticked } = this.state;
+    const { stuck } = this.state;
 
-    const offset = sticked ? fixedOffset : elOffset;
+    const offset = stuck ? fixedOffset : elOffset;
     const style = {
-      ...(sticked ? STYLES.sticked : STYLES.default),
+      ...(stuck ? STYLES.stuck : STYLES.default),
       transform: `translateY(${offset}px)`,
       width: elWidth,
     };
