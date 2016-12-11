@@ -1,7 +1,9 @@
 # react-sticky-block
----
 
 Right way to make your block sticky
+
+---
+
 
 
 ## Install
