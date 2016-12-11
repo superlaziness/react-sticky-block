@@ -24,6 +24,7 @@ const MyComponent = () => (
 ```
 
 Movement of sticky block is limited by height of their container.
+
 Container must have relative positioning applied.
 
 ## StickyBlock props
@@ -50,7 +51,7 @@ Container must have relative positioning applied.
     <tr>
       <td>initTimeout</td>
       <td>number</td>
-      <td>timeout in ms before it determine initial size and position of sticky block</td>
+      <td>timeout in ms before it determines initial size and position of sticky block</td>
     </tr>
   </tbody>
 </table>
