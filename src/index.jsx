@@ -34,12 +34,23 @@ export default class StickyBlock extends PureComponent {
       scrollOffset: 0,
       lastScrollPosition: 0,
       elWidth: 'auto',
+      parent: false,
     };
+
+    if (props.testInitData) {
+      this.data = {...this.data, ...props.testInitData, parent: 'test parent'};
+      this.state.init = false;
+    };
+  }
+
+  componentWillReceiveProps(nextProps) {
+    if (nextProps.testInitData) this.handleScroll();
   }
 
   componentDidMount() {
     document.addEventListener('scroll', this.handleScroll);
-    this.initialize();
+    if (this.props.testInitData) this.handleScroll();
+    else this.initialize();
   }
 
   componentWillUnmount() {
@@ -47,11 +58,11 @@ export default class StickyBlock extends PureComponent {
   }
 
   getScrollState = () => {
-    const { topOffset, bottomOffset } = this.props;
+    const { topOffset, bottomOffset, testScrollState } = this.props;
     const { lastScrollPosition, parent } = this.data;
     const scrollPosition = window.pageYOffset;
     this.data.lastScrollPosition = scrollPosition;
-    return {
+    return testScrollState || {
       rect: this.sticky.getBoundingClientRect(),
       innerZone: window.innerHeight - topOffset - bottomOffset,
       scrollPosition,
@@ -108,6 +119,7 @@ export default class StickyBlock extends PureComponent {
             }
             break;
           }
+
           case 'slideStick': {
             if (scrollPosition < (elOffset + scrollOffset) - topOffset) {
               data.elOffset = stuckTopOffset;
@@ -119,6 +131,7 @@ export default class StickyBlock extends PureComponent {
             }
             break;
           }
+
           default: return false;
         }
         break;
@@ -192,11 +205,16 @@ export default class StickyBlock extends PureComponent {
       return offset;
     };
     /* eslint-enable */
+
+    const initData = {
+      scrollOffset: getElementInitialOffset(),
+      elWidth: this.sticky.getBoundingClientRect().width,
+    };
+
     setTimeout(() => {
       this.data = {
         ...this.data,
-        scrollOffset: getElementInitialOffset(),
-        elWidth: this.sticky.getBoundingClientRect().width,
+        ...initData,
         parent: this.sticky.offsetParent,
       };
       this.setState({ init: false });
