@@ -17,6 +17,24 @@ export default class StickyBlock extends PureComponent {
       PropTypes.element.isRequired,
       PropTypes.array.isRequired,
     ]),
+
+    // props only for testing
+    testInitData: React.PropTypes.shape({
+      scrollOffset: React.PropTypes.number,
+      elWidth: React.PropTypes.number,
+    }),
+    testScrollState: React.PropTypes.shape({
+      rect: React.PropTypes.shape({
+        height: React.PropTypes.number,
+        top: React.PropTypes.number,
+      }),
+      parentRect: React.PropTypes.shape({
+        bottom: React.PropTypes.number,
+      }),
+      innerZone: React.PropTypes.number,
+      scrollPosition: React.PropTypes.number,
+      scrollDirection: React.PropTypes.string,
+    }),
   }
 
   constructor(props) {
@@ -38,19 +56,19 @@ export default class StickyBlock extends PureComponent {
     };
 
     if (props.testInitData) {
-      this.data = {...this.data, ...props.testInitData, parent: 'test parent'};
+      this.data = { ...this.data, ...props.testInitData, parent: 'test parent' };
       this.state.init = false;
-    };
-  }
-
-  componentWillReceiveProps(nextProps) {
-    if (nextProps.testInitData) this.handleScroll();
+    }
   }
 
   componentDidMount() {
     document.addEventListener('scroll', this.handleScroll);
     if (this.props.testInitData) this.handleScroll();
     else this.initialize();
+  }
+
+  componentWillReceiveProps(nextProps) {
+    if (nextProps.testInitData) this.handleScroll();
   }
 
   componentWillUnmount() {
@@ -234,7 +252,7 @@ export default class StickyBlock extends PureComponent {
     };
 
     return (
-      <div style={style} ref={(el) => { this.sticky = el; }}>
+      <div style={style} ref={el => { this.sticky = el; }}>
         {children}
       </div>
     );

@@ -4,8 +4,8 @@
   "description": "React Sticky component",
   "main": "lib/index.js",
   "scripts": {
-    "test": "tape -r ./test/babel-register-setup test/*-test.js | faucet",
-    "lint": "eslint src --ext jsx --ext js",
+    "test": "tape -r ./test/babel-register-setup test/*-test.* | faucet",
+    "lint": "eslint --ext jsx --ext js src test",
     "lint:fix": "eslint src --fix --ext jsx --ext js",
     "build": "babel --out-dir lib src",
     "prepublish": "npm run build"
