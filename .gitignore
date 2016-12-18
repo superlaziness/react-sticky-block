@@ -1,4 +1,8 @@
-lib
 node_modules
 .DS_Store
 npm-debug.log
+react-sticky-block.sublime-project
+react-sticky-block.sublime-workspace
+demo
+src
+test
