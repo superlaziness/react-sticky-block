@@ -6,10 +6,10 @@ import {
 } from './constants';
 
 const emulateScroll =
-  scrollHeight => block => progress => component => {
+  scrollHeight => block => progress => feedback => {
     const scrollDirection = progress <= 0.5 ? 'down' : 'up';
     const scrollPosition = scrollHeight - ((Math.abs(progress - 0.5) / 0.5) * scrollHeight);
-    const { elOffset, fixedOffset, stuck } = component;
+    const { elOffset, fixedOffset, stuck } = feedback;
     return {
       testInitData: {
         scrollOffset: SCROLL_OFFSET,

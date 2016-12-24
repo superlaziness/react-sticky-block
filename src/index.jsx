@@ -37,6 +37,11 @@ export default class StickyBlock extends PureComponent {
     }),
   }
 
+  static defaultProps = {
+    topOffset: 0,
+    bottomOffset: 0,
+  }
+
   constructor(props) {
     super(props);
 
@@ -91,10 +96,12 @@ export default class StickyBlock extends PureComponent {
 
   setBehaivor = ({ rect, innerZone, parentRect }) => {
     const { behavior } = this.data;
-    const { topOffset } = this.props;
+    const { topOffset, bottomOffset = 0 } = this.props;
 
     let newBehavior;
-    if (parentRect.bottom < topOffset + rect.height) {
+    if (behavior === 'slideStick' && parentRect.bottom < window.innerHeight - bottomOffset)
+      newBehavior = 'overflow';
+    if (behavior !== 'slideStick' && parentRect.bottom < topOffset + rect.height) {
       newBehavior = 'overflow';
     } else if (rect.height > innerZone && behavior !== 'slideStick') {
       newBehavior = 'slideStick';
@@ -207,8 +214,10 @@ export default class StickyBlock extends PureComponent {
   handleScroll = () => {
     if (this.state.init) return false;
     const scrollState = this.getScrollState();
-    this.setBehaivor(scrollState);
-    this.setSticked(scrollState);
+    requestAnimationFrame(() => {
+      this.setBehaivor(scrollState);
+      this.setSticked(scrollState);
+    });
     return false;
   }
 
@@ -251,9 +260,27 @@ export default class StickyBlock extends PureComponent {
       width: elWidth,
     };
 
+    const stuckStyle = {
+      ...STYLES.stuck,
+      opacity: stuck ? 1 : 0,
+      transform: `translate3d(0, ${fixedOffset}px, 0)`,
+      width: elWidth,
+    }
+
+    const defStyle = {
+      ...STYLES.default,
+      transform: `translate3d(0, ${elOffset}px, 0)`,
+      opacity: stuck ? 0 : 1,
+    }
+
     return (
-      <div style={style} ref={el => { this.sticky = el; }}>
-        {children}
+      <div>
+        <div style={defStyle} ref={el => { this.sticky = el; }}>
+          {children}
+        </div>
+        <div style={stuckStyle}>
+          {children}
+        </div>
       </div>
     );
   }
