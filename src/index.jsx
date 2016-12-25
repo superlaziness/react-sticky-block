@@ -81,12 +81,13 @@ export default class StickyBlock extends PureComponent {
     if (this.props !== nextProps) return true;
     const { stuck } = nextState;
     const { elOffset, fixedOffset, elWidth } = this.data;
+
     if (this.state.stuck !== nextState.stuck) {
       this.sticky.style.opacity = stuck ? 0 : 1;
       this.sticky.style.transform = `translate3d(0, ${elOffset}px, 0)`;
-      this.stuck.width = elWidth;
       this.stuck.style.opacity = stuck ? 1 : 0;
-      this.stuck.transform = `translate3d(0, ${fixedOffset}px, 0)`;
+      this.stuck.style.transform = `translate3d(0, ${fixedOffset}px, 0)`;
+      this.stuck.style.width = elWidth+'px';
     };
     return false;
   }
