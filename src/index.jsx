@@ -217,6 +217,8 @@ export default class StickyBlock extends PureComponent {
       this.sticky.style.transform = `translate3d(0, ${stuck ? data.fixedOffset : data.elOffset}px, 0)`;
       this.sticky.style.width = this.data.elWidth+'px';
       this.isStuck = stuck;
+    } else {
+      this.sticky.style.transform = `translate3d(0, ${stuck ? data.fixedOffset + scrollPosition / 2 : data.elOffset}px, 0)`;
     };
     return false;
   }
