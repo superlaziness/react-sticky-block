@@ -102,16 +102,18 @@ export default class StickyBlock extends PureComponent {
     const { topOffset, bottomOffset = 0 } = this.props;
 
     let newBehavior;
-    if (behavior === 'slideStick' && parentRect.bottom < window.innerHeight - bottomOffset)
+    if (behavior === 'slideStick' && parentRect.bottom < window.innerHeight - bottomOffset) {
       newBehavior = 'overflow';
-    if (behavior !== 'slideStick' && parentRect.bottom < topOffset + rect.height) {
+    } else if (behavior !== 'slideStick' && parentRect.bottom < topOffset + rect.height) {
       newBehavior = 'overflow';
-    } else if (rect.height > innerZone && behavior !== 'slideStick') {
+    } else if (rect.height > innerZone) {
       newBehavior = 'slideStick';
     } else if (rect.height < innerZone) {
       if (rect.top < topOffset && behavior !== 'stickTop') newBehavior = 'lost';
       else newBehavior = 'stickTop';
     }
+
+    //console.log('new b', behavior, newBehavior, parentRect.bottom, window.innerHeight - bottomOffset);
 
     if (newBehavior) this.data.behavior = newBehavior;
   }
@@ -210,9 +212,12 @@ export default class StickyBlock extends PureComponent {
     }
 
     this.data = { ...this.data, ...data };
+    console.log('changed', behavior, stuck, this.data.fixedOffset, this.data.elOffset);
     if (this.isStuck !== stuck) {
-      this.stuck.style.transform = `translate3d(0, ${data.fixedOffset}px, 0) ${stuck ? 'scale(1.000001)' : 'scale(0)'}`;
-      this.sticky.style.transform = `translate3d(0, ${data.elOffset}px, 0) ${stuck ? 'scale(0)' : 'scale(1.000001)'}`;
+      
+      this.stuck.style.transform = `translate3d(0, ${this.data.fixedOffset || 0}px, 0) ${stuck ? 'scale(1.000001)' : 'scale(0)'}`;
+      this.sticky.style.transform = `translate3d(0, ${this.data.elOffset || 0}px, 0)`;
+      this.sticky.style.opacity = stuck ? 0 : 1;
       this.isStuck = stuck;
     }/* else {
       this.stuck.style.transform = `translate3d(0, ${stuck ? data.fixedOffset + scrollPosition / 2 : data.elOffset}px, 0)`;
@@ -273,11 +278,12 @@ export default class StickyBlock extends PureComponent {
     const stuckStyle = {
       ...STYLES.stuck,
       zIndex: 100,
-      transform: `translate3d(0, ${fixedOffset}px, 0) ${stuck ? 'scale(1.0001)' : 'scale(0)'}`,
+      transform: `translate3d(0, ${fixedOffset}px, 0) ${stuck ? 'scale(1.000001)' : 'scale(0)'}`,
     }
 
     const defStyle = {
-      transform: `translate3d(0, ${elOffset}px, 0) ${stuck ? 'scale(0)' : 'scale(1.0001)'}`,
+      opacity: stuck ? 0 : 1,
+      transform: `translate3d(0, ${elOffset}px, 0)`,
     }
 
     return (
