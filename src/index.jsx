@@ -211,15 +211,12 @@ export default class StickyBlock extends PureComponent {
 
     this.data = { ...this.data, ...data };
     if (this.isStuck !== stuck) {
-     // this.stuck.style.opacity = stuck ? 1 : 0;
-     // this.sticky.style.opacity = stuck ? 0 : 1;
-      this.sticky.style.position = stuck ? 'fixed' : 'static';
-      this.sticky.style.transform = `translate3d(0, ${stuck ? data.fixedOffset : data.elOffset}px, 0)`;
-      this.sticky.style.width = this.data.elWidth+'px';
+      this.stuck.style.transform = `translate3d(0, ${data.fixedOffset}px, 0) ${stuck ? 'scale(1)' : 'scale(0)'}`;
+      this.sticky.style.transform = `translate3d(0, ${data.elOffset}px, 0) ${stuck ? 'scale(0)' : 'scale(1)'}`;
       this.isStuck = stuck;
-    } else {
-      this.sticky.style.transform = `translate3d(0, ${stuck ? data.fixedOffset + scrollPosition / 2 : data.elOffset}px, 0)`;
-    };
+    }/* else {
+      this.stuck.style.transform = `translate3d(0, ${stuck ? data.fixedOffset + scrollPosition / 2 : data.elOffset}px, 0)`;
+    };*/
     return false;
   }
 
@@ -256,6 +253,7 @@ export default class StickyBlock extends PureComponent {
         ...initData,
         parent: this.sticky.offsetParent,
       };
+      this.stuck.style.width = this.data.elWidth+'px';
       this.setState({ init: false });
     }, this.props.initTimeout);
   }
@@ -274,16 +272,12 @@ export default class StickyBlock extends PureComponent {
 
     const stuckStyle = {
       ...STYLES.stuck,
-      opacity: stuck ? 1 : 0,
-      transform: `translate3d(0, ${fixedOffset}px, 0)`,
-      width: elWidth,
+      transform: `translate3d(0, ${fixedOffset}px, 0) ${stuck ? 'scale(1)' : 'scale(0)'}`,
     }
 
     const defStyle = {
       ...STYLES.default,
-      top: 0,
-      transform: `translate3d(0, ${elOffset}px, 0)`,
-     // opacity: stuck ? 0 : 1,
+      transform: `translate3d(0, ${elOffset}px, 0) ${stuck ? 'scale(0)' : 'scale(1)'}`,
     }
 
     return (
@@ -291,9 +285,9 @@ export default class StickyBlock extends PureComponent {
         <div style={defStyle} ref={el => { this.sticky = el; }}>
           {children}
         </div>
-        {/*<div style={stuckStyle} ref={el => { this.stuck = el; }}>
+        <div style={stuckStyle} ref={el => { this.stuck = el; }}>
           {children}
-        </div>*/}
+        </div>
       </div>
     );
   }
