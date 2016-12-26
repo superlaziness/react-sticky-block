@@ -273,11 +273,11 @@ export default class StickyBlock extends PureComponent {
     const stuckStyle = {
       ...STYLES.stuck,
       zIndex: 'auto',
-      transform: `translate3d(0, ${fixedOffset}px, 0) ${stuck ? 'scale(1)' : 'scale(0)'}`,
+      transform: `translate3d(0, ${fixedOffset}px, 0) ${stuck ? 'scale(1,0000001)' : 'scale(0)'}`,
     }
 
     const defStyle = {
-      transform: `translate3d(0, ${elOffset}px, 0) ${stuck ? 'scale(0)' : 'scale(1)'}`,
+      transform: `translate3d(0, ${elOffset}px, 0) ${stuck ? 'scale(0)' : 'scale(1,0000001)'}`,
     }
 
     return (
