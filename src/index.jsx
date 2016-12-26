@@ -1,13 +1,5 @@
 import React, { PureComponent, PropTypes } from 'react';
 
-const STYLES = {
-  default: { position: 'static' },
-  stuck: {
-    position: 'fixed',
-    top: 0,
-  },
-};
-
 export default class StickyBlock extends PureComponent {
   static propTypes = {
     topOffset: PropTypes.number,
@@ -76,7 +68,6 @@ export default class StickyBlock extends PureComponent {
 
   componentWillReceiveProps(nextProps) {
     if (nextProps.testInitData) this.handleScroll();
-
   }
 
   componentWillUnmount() {
@@ -88,8 +79,10 @@ export default class StickyBlock extends PureComponent {
     const { lastScrollPosition, parent } = this.data;
     const scrollPosition = window.pageYOffset;
     this.data.lastScrollPosition = scrollPosition;
+    let rect = this.sticky.getBoundingClientRect();
+    if (!rect.height) rect = this.stuck.getBoundingClientRect();
     return testScrollState || {
-      rect: this.sticky.getBoundingClientRect(),
+      rect,
       innerZone: window.innerHeight - topOffset - bottomOffset,
       scrollPosition,
       scrollDirection: lastScrollPosition > scrollPosition ? 'up' : 'down',
@@ -112,8 +105,6 @@ export default class StickyBlock extends PureComponent {
       if (rect.top < topOffset && behavior !== 'stickTop') newBehavior = 'lost';
       else newBehavior = 'stickTop';
     }
-
-    //console.log('new b', behavior, newBehavior, parentRect.bottom, window.innerHeight - bottomOffset);
 
     if (newBehavior) this.data.behavior = newBehavior;
   }
@@ -212,12 +203,9 @@ export default class StickyBlock extends PureComponent {
     }
 
     this.data = { ...this.data, ...data };
-    console.log('changed', behavior, stuck, this.data.fixedOffset, this.data.elOffset);
     if (this.isStuck !== stuck) {
-      
       this.stuck.style.transform = `translate3d(0, ${this.data.fixedOffset || 0}px, 0) ${stuck ? 'scale(1.000001)' : 'scale(0)'}`;
-      this.sticky.style.transform = `translate3d(0, ${this.data.elOffset || 0}px, 0)`;
-      this.sticky.style.opacity = stuck ? 0 : 1;
+      this.sticky.style.transform = `translate3d(0, ${this.data.elOffset || 0}px, 0) ${stuck ? 'scale(0)' : 'scale(1.000001)'}`;
       this.isStuck = stuck;
     }/* else {
       this.stuck.style.transform = `translate3d(0, ${stuck ? data.fixedOffset + scrollPosition / 2 : data.elOffset}px, 0)`;
@@ -264,27 +252,19 @@ export default class StickyBlock extends PureComponent {
   }
 
   render() {
-    const { elOffset, fixedOffset, elWidth } = this.data;
     const { children } = this.props;
     const { stuck } = this.state;
 
-    const offset = stuck ? fixedOffset : elOffset;
-    const style = {
-      ...(stuck ? STYLES.stuck : STYLES.default),
-      transform: `translateY(${offset}px)`,
-      width: elWidth,
-    };
-
     const stuckStyle = {
-      ...STYLES.stuck,
+      position: 'fixed',
+      top: 0,
       zIndex: 100,
       transform: 'scale(0)',
-    }
+    };
 
     const defStyle = {
-      opacity: stuck ? 0 : 1,
-      //transform: `translate3d(0, ${elOffset}px, 0)`,
-    }
+      transform: 'scale(1)',
+    };
 
     return (
       <div>
