@@ -211,11 +211,11 @@ export default class StickyBlock extends PureComponent {
 
     this.data = { ...this.data, ...data };
     if (this.isStuck !== stuck) {
-      this.sticky.style.opacity = stuck ? 0 : 1;
-      this.sticky.style.transform = `translate3d(0, ${data.elOffset}px, 0)`;
-      this.stuck.style.opacity = stuck ? 1 : 0;
-      this.stuck.style.transform = `translate3d(0, ${data.fixedOffset}px, 0)`;
-      this.stuck.style.width = this.data.elWidth+'px';
+     // this.stuck.style.opacity = stuck ? 1 : 0;
+     // this.sticky.style.opacity = stuck ? 0 : 1;
+      this.sticky.style.position = stuck ? 'fixed' : 'static';
+      this.sticky.style.transform = `translate3d(0, ${stuck ? data.fixedOffset : data.elOffset}px, 0)`;
+      this.sticky.style.width = this.data.elWidth+'px';
       this.isStuck = stuck;
     };
     return false;
@@ -279,8 +279,9 @@ export default class StickyBlock extends PureComponent {
 
     const defStyle = {
       ...STYLES.default,
+      top: 0,
       transform: `translate3d(0, ${elOffset}px, 0)`,
-      opacity: stuck ? 0 : 1,
+     // opacity: stuck ? 0 : 1,
     }
 
     return (
@@ -288,9 +289,9 @@ export default class StickyBlock extends PureComponent {
         <div style={defStyle} ref={el => { this.sticky = el; }}>
           {children}
         </div>
-        <div style={stuckStyle} ref={el => { this.stuck = el; }}>
+        {/*<div style={stuckStyle} ref={el => { this.stuck = el; }}>
           {children}
-        </div>
+        </div>*/}
       </div>
     );
   }
